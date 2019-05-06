@@ -1,0 +1,6 @@
+This is a pretty simple program. 
+I chose this method because it is the most simple and straight forward. 
+Firstly for any number xx.xx I separate the integer part with the decimal part, because essentially these can be processed in the same way.
+Then I use a function to turn number into text, this is done by spliting each integer into digits, so 123 has 1 in hundreds, 2 in tens and 3 in ones. 
+It is simple to split them into digits as modulo and integer division do the trick cleanly.
+This method is simple and provides O(1) time for any number.

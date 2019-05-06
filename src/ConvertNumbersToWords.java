@@ -1,4 +1,3 @@
-import java.io.Console;
 import java.util.Scanner;
 
 /**
@@ -10,6 +9,7 @@ import java.util.Scanner;
  */
 public class ConvertNumbersToWords {
     private static String[] underTwenty = new String[] {
+            "",//pad
             "ONE",//1
             "TWO",//2
             "THREE",//3
@@ -32,6 +32,8 @@ public class ConvertNumbersToWords {
     };
 
     private static String[] underHundred = new String[] {
+            "",//pad
+            "",//pad
             "TWENTY",//20
             "THIRTY",//30
             "FORTY",//40
@@ -70,11 +72,25 @@ public class ConvertNumbersToWords {
         if (NumberString.contains(".")) { //If the entered number has a decimal point
             integerPart = NumberString.substring(0, NumberString.indexOf('.'));
             decimalPart = NumberString.substring(NumberString.indexOf('.')+1,NumberString.length());
-            return NumberToWords(integerPart) + " AND " + NumberToWords(decimalPart) + " CENTS";
+            if (Integer.valueOf(integerPart) == 0) {
+                if (Integer.valueOf(decimalPart) == 1) {
+                    return "ONE CENT";
+                }
+                return NumberToWords(decimalPart) + " CENTS";
+            } else if (Integer.valueOf(decimalPart) == 0) {
+                if (Integer.valueOf(integerPart) == 1) {
+                    return "ONE DOLLAR";
+                }
+                return NumberToWords(integerPart) + " DOLLARS";
+            }
+            if (Integer.valueOf(decimalPart) == 1) {
+                return NumberToWords(integerPart) + " DOLLARS AND " + "ONE CENT";
+            } else if (Integer.valueOf(integerPart) == 1) {
+                return "ONE DOLLAR AND " + NumberToWords(decimalPart) + " CENTS";
+            }
+            return NumberToWords(integerPart) + " DOLLARS AND " + NumberToWords(decimalPart) + " CENTS";
         }
-        double numbers;
-        numbers = Double.valueOf(NumberString);
-        return " intPart: "+NumberString;
+        return NumberToWords(NumberString) + " DOLLARS";
     }
     /**
      * Helper function which actually does the heavy lifting and converts numbers to words.
@@ -83,24 +99,40 @@ public class ConvertNumbersToWords {
      * @return The string which represents the converted number
      */
     public static String NumberToWords(String numbers) {
-        String convertedNumber = new String();
         int numbersInt = Integer.valueOf(numbers);
-        if (numbersInt < 20) {
-            return underTwenty[numbersInt - 1];
-        } else if (numbersInt < 100) {
+        if (numbersInt == 0) {
+            return "";
+        }else if (numbersInt < 20) {
+            return underTwenty[numbersInt];
+        } else if (numbersInt < 100) { //20-99
             int tens = numbersInt / 10;
             int ones = numbersInt % 10;
             if (ones > 0) {
-                return underHundred[tens - 2] + " " + underTwenty[ones - 1];
+                return underHundred[tens] + "-" + underTwenty[ones];
             } else {
-                return underHundred[tens - 2];
+                return underHundred[tens];
             }
-
-
+        } else if (numbersInt < 1000) { //100-999
+            int hundreds = numbersInt / 100;
+            int tens = (numbersInt - hundreds * 100) / 10;
+            int ones = numbersInt % 10;
+            if (tens == 0 && ones == 0) {
+                return underTwenty[hundreds] + " HUNDRED";
+            }
+            return underTwenty[hundreds] + " HUNDRED" + " AND " + NumberToWords(Integer.toString(numbersInt - hundreds * 100));
+        } else if (numbersInt < 10000) { //1000-9999
+            int thousands = numbersInt / 1000;
+            int hundreds = (numbersInt - thousands * 1000) / 100;
+            int tens = (numbersInt - thousands * 1000 - hundreds * 100) / 10;
+            int ones = numbersInt % 10;
+            if (hundreds == 0 && tens == 0) {
+                if (ones == 0) {
+                    return NumberToWords(Integer.toString(thousands)) + " THOUSAND";
+                }
+                return NumberToWords(Integer.toString(thousands)) + " THOUSAND AND " + NumberToWords(Integer.toString(numbersInt - thousands * 1000));
+            }
+            return NumberToWords(Integer.toString(thousands)) + " THOUSAND " + NumberToWords(Integer.toString(numbersInt - thousands * 1000));
         }
-        int ones,tens,hundreds;
-
-        ones = numbersInt % 10;
-        return convertedNumber;
+        return "";
     }
 }
