@@ -76,18 +76,27 @@ public class ConvertNumbersToWords {
         numbers = Double.valueOf(NumberString);
         return " intPart: "+NumberString;
     }
-
     /**
-     * Helper function which actual does the heavy lifting and converts numbers to words.
+     * Helper function which actually does the heavy lifting and converts numbers to words.
      * Please note this function expects the string to be integers great than zero.
      * @param numbers a integer that's great than zero
-     * @return
+     * @return The string which represents the converted number
      */
     public static String NumberToWords(String numbers) {
         String convertedNumber = new String();
         int numbersInt = Integer.valueOf(numbers);
         if (numbersInt < 20) {
             return underTwenty[numbersInt - 1];
+        } else if (numbersInt < 100) {
+            int tens = numbersInt / 10;
+            int ones = numbersInt % 10;
+            if (ones > 0) {
+                return underHundred[tens - 2] + " " + underTwenty[ones - 1];
+            } else {
+                return underHundred[tens - 2];
+            }
+
+
         }
         int ones,tens,hundreds;
 
